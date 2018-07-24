@@ -1,58 +1,84 @@
 package main
 
 import (
-	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/0x111/telegram-rss-bot/chans"
+	"github.com/0x111/telegram-rss-bot/commands"
+	"github.com/0x111/telegram-rss-bot/conf"
+	"github.com/0x111/telegram-rss-bot/db"
+	"github.com/0x111/telegram-rss-bot/migrations"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
-	"log"
 )
 
 func main() {
+	conf.LoadConfig()
+	dbc := db.ConnectDB()
+	defer dbc.Close()
 
-	db, err := sql.Open("sqlite3", "file:foo.db?cache=shared")
+	var err error
 
-	// Check error for database connection
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+	// Read config
+	config := conf.GetConfig()
 
-	// Create base tables
-	sqlStmt := `
-	drop table foo;
-	
-	`
+	Bot, err := tgbotapi.NewBotAPI(config.GetString("telegram_auth_key"))
 
-	_, err = db.Exec(sqlStmt)
-	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
-		return
-	}
-
-	bot, err := tgbotapi.NewBotAPI("605498632:AAE_Eb_CJp_3k2m8t-1LPXrd0DdQoyCrnY0")
 	if err != nil {
 		log.Panic(err)
 	}
 
-	bot.Debug = true
+	Bot.Debug = config.GetBool("telegram_api_debug")
 
-	log.Printf("Authorized on account %s", bot.Self.UserName)
+	log.Debug("Authorized on account ", Bot.Self.UserName)
+
+	// create basic database structure
+	migrations.Migrate()
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	updates, err := bot.GetUpdatesChan(u)
+	// read rss data from channels
+	go func() {
+		chans.FeedUpdates()
+	}()
+
+	// post rss data to channels
+	go func() {
+		chans.FeedPosts(Bot)
+	}()
+
+	// read feed updates from the Telegram API
+	updates, err := Bot.GetUpdatesChan(u)
 
 	for update := range updates {
+
+		// if the message is empty, we do not need to handle anything
 		if update.Message == nil {
 			continue
 		}
 
-		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+		// allow only private conversations for the bot now
+		if int64(update.Message.From.ID) != update.Message.Chat.ID {
+			continue
+		}
 
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-		msg.ReplyToMessageID = update.Message.MessageID
+		// handle add command
+		if update.Message.IsCommand() && update.Message.Command() == "add" {
+			commands.AddCommand(Bot, &update)
+		}
 
-		bot.Send(msg)
+		// handle delete command
+		if update.Message.IsCommand() && update.Message.Command() == "delete" {
+			commands.DeleteCommand(Bot, &update)
+		}
+
+		// handle list command
+		if update.Message.IsCommand() && update.Message.Command() == "list" {
+			commands.ListCommand(Bot, &update)
+		}
+
+		// handle list command
+		if update.Message.IsCommand() && update.Message.Command() == "help" {
+			commands.HelpCommand(Bot, &update)
+		}
 	}
 }
