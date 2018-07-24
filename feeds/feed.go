@@ -2,6 +2,7 @@ package feeds
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/0x111/telegram-rss-bot/conf"
 	"github.com/0x111/telegram-rss-bot/db"
 	"github.com/0x111/telegram-rss-bot/models"
@@ -10,11 +11,10 @@ import (
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 	"time"
-	"errors"
 )
 
 // Add a new feed to the database
-func AddFeed(Bot *tgbotapi.BotAPI, name string, url string, chatid int64, userid int) (error) {
+func AddFeed(Bot *tgbotapi.BotAPI, name string, url string, chatid int64, userid int) error {
 	DB := db.GetDB()
 	exists, err := Exists(url, chatid)
 
@@ -59,7 +59,7 @@ func AddFeed(Bot *tgbotapi.BotAPI, name string, url string, chatid int64, userid
 
 // Delete a feed by a feedID parameter
 func DeleteFeedByID(feedid int, chatid int64, userid int) error {
-	if err := FeedExistsByID(feedid, chatid, userid); err != nil  {
+	if err := FeedExistsByID(feedid, chatid, userid); err != nil {
 		return err
 	}
 

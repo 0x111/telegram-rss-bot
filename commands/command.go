@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"github.com/0x111/telegram-rss-bot/feeds"
 	"github.com/0x111/telegram-rss-bot/replies"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 	"strconv"
 	"strings"
-	log "github.com/sirupsen/logrus"
 )
 
 // Commands functions which are executed upon receiving a command
-
 
 func AddCommand(Bot *tgbotapi.BotAPI, update *tgbotapi.Update) {
 
