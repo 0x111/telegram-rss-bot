@@ -57,9 +57,9 @@ func main() {
 		}
 
 		// allow only private conversations for the bot now
-		if int64(update.Message.From.ID) != update.Message.Chat.ID {
-			continue
-		}
+		//if int64(update.Message.From.ID) != update.Message.Chat.ID {
+		//	continue
+		//}
 
 		// handle add command
 		if update.Message.IsCommand() && update.Message.Command() == "add" {
