@@ -25,10 +25,7 @@ jobs:
           go get -v -t -d ./...
 
       - name: Build telegram-rss-bot on linux/amd64
-        env:
-          GOOS: linux
-          GOARCH: amd64
-        run: go build -o build/telegram-rss-bot-$GOOS-$GOARCH
+        run: go build -v -o build/telegram-rss-bot-linux-amd64
 
       - name: Test
         run: go test -v .
@@ -55,11 +52,8 @@ jobs:
         run: |
           go get -v -t -d ./...
 
-      - name: Build telegram-rss-bot on $GOOS/$GOARCH
-        env:
-          GOOS: windows
-          GOARCH: amd64
-        run: go build -o build/telegram-rss-bot-$GOOS-$GOARCH
+      - name: Build telegram-rss-bot on windows/amd64
+        run: go build -v -o build/telegram-rss-bot-windows-amd64.exe
 
       - name: Test
         run: go test -v .
@@ -86,11 +80,8 @@ jobs:
         run: |
           go get -v -t -d ./...
 
-      - name: Build telegram-rss-bot on $GOOS/$GOARCH
-        env:
-          GOOS: darwin
-          GOARCH: amd64
-        run: go build -o build/telegram-rss-bot-$GOOS-$GOARCH
+      - name: Build telegram-rss-bot on darwin/amd64
+        run: go build -v -o build/telegram-rss-bot-darwin-amd64
 
       - name: Test
         run: go test -v .
