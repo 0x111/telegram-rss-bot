@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ master ]
 
-strategy:
-  matrix:
-    os: [ubuntu-latest, windows-latest, macos-latest]
-
 jobs:
   linux_amd64:
     name: Build telegram-rss-bot on linux/amd64
