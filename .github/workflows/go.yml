@@ -13,10 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        goos: [linux, windows, darwin]
-        goarch: [amd64]
     steps:
-
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
@@ -30,10 +27,18 @@ jobs:
         run: |
           go get -v -t -d ./...
 
+      - name: Set GOOS
+        run: |
+          echo ::set-env name=GOOS::$(go env GOOS)
+
+      - name: Set GOARCH
+        run: |
+          echo ::set-env name=GOARCH::$(go env GOARCH)
+
       - name: Build telegram-rss-bot on ${{ matrix.os }}
         env:
-          GOARCH: ${{ matrix.goarch }}
-          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ env.GOARCH }}
+          GOOS: ${{ env.GOOS }}
         run: go build -o build/telegram-rss-bot-$goos-$goarch
 
       - name: Test
