@@ -39,7 +39,7 @@ jobs:
         env:
           GOARCH: ${{ env.GOARCH }}
           GOOS: ${{ env.GOOS }}
-        run: go build -o build/telegram-rss-bot-$goos-$goarch
+        run: go build -o build/telegram-rss-bot-$GOARCH-$GOARCH
 
       - name: Test
         run: go test -v .
