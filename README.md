@@ -1,5 +1,7 @@
 # telegram-rss-bot
 
+![Build telegram-rss-bot](https://github.com/0x111/telegram-rss-bot/workflows/Build%20telegram-rss-bot/badge.svg)
+
 ## Introduction
 This is an another telegram bot for usage with RSS feeds.
 
