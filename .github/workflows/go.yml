@@ -27,19 +27,8 @@ jobs:
         run: |
           go get -v -t -d ./...
 
-      - name: Set GOOS
-        run: |
-          echo ::set-env name=GOOS::$(go env GOOS)
-
-      - name: Set GOARCH
-        run: |
-          echo ::set-env name=GOARCH::$(go env GOARCH)
-
       - name: Build telegram-rss-bot on ${{ matrix.os }}
-        env:
-          GOARCH: ${{ env.GOARCH }}
-          GOOS: ${{ env.GOOS }}
-        run: go build -o build/telegram-rss-bot-$GOARCH-$GOARCH
+        run: go build -o build/telegram-rss-bot-$(go env GOOS)-$(go env GOARCH)
 
       - name: Test
         run: go test -v .
