@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/0x111/telegram-rss-bot/feeds"
 	"github.com/0x111/telegram-rss-bot/replies"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/telegram-bot-api.v4"
 	"strconv"
 	"strings"
 )
@@ -17,7 +17,7 @@ func AddCommand(Bot *tgbotapi.BotAPI, update *tgbotapi.Update) {
 	commandArguments := strings.Split(update.Message.CommandArguments(), " ")
 
 	if len(commandArguments) < 2 {
-		log.Debug("Not enough arguments. We need \"/add name url\"")
+		log.Debug("Not enough arguments\\. We need \"/add name url\"")
 		return
 	}
 
@@ -30,7 +30,7 @@ func AddCommand(Bot *tgbotapi.BotAPI, update *tgbotapi.Update) {
 	txt := ""
 
 	if err == nil {
-		txt = fmt.Sprintf("The feed with the url [%s] was successfully added to this channel!", feedUrl)
+		txt = fmt.Sprintf("The feed with the url [%s] was successfully added to this channel\\!", replies.FilterMessageChars(feedUrl))
 		replies.SimpleMessage(Bot, chatid, update.Message.MessageID, txt)
 	}
 }
@@ -51,7 +51,7 @@ func DeleteCommand(Bot *tgbotapi.BotAPI, update *tgbotapi.Update) {
 	commandArguments := strings.Split(update.Message.CommandArguments(), " ")
 
 	if len(commandArguments) < 1 {
-		panic("Not enough arguments. We need \"/delete id\"")
+		panic("Not enough arguments\\. We need \"/delete id\"")
 	}
 
 	feedid, _ := strconv.Atoi(commandArguments[0])
@@ -60,12 +60,12 @@ func DeleteCommand(Bot *tgbotapi.BotAPI, update *tgbotapi.Update) {
 	err := feeds.DeleteFeedByID(feedid, chatid, userid)
 
 	if err != nil {
-		txt := fmt.Sprintf("There is no feed with the id [%d]!", feedid)
+		txt := fmt.Sprintf("There is no feed with the id [%d]\\!", feedid)
 		replies.SimpleMessage(Bot, chatid, update.Message.MessageID, txt)
 		return
 	}
 
-	txt := fmt.Sprintf("The feed with the id [%d] was successfully deleted!", feedid)
+	txt := fmt.Sprintf("The feed with the id [%d] was successfully deleted\\!", feedid)
 	replies.SimpleMessage(Bot, chatid, update.Message.MessageID, txt)
 }
 
@@ -76,5 +76,5 @@ func HelpCommand(Bot *tgbotapi.BotAPI, update *tgbotapi.Update) {
 /list - With this command you are able to list all the existing feeds with their ID numbers
 /delete %ID - With this command you are able to delete an added feed if you do not need it anymore. The ID parameter is required and you can get it from the /list command 
 	`
-	replies.SimpleMessage(Bot, update.Message.Chat.ID, update.Message.MessageID, txt)
+	replies.SimpleMessage(Bot, update.Message.Chat.ID, update.Message.MessageID, replies.FilterMessageChars(txt))
 }

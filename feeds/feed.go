@@ -7,9 +7,9 @@ import (
 	"github.com/0x111/telegram-rss-bot/db"
 	"github.com/0x111/telegram-rss-bot/models"
 	"github.com/0x111/telegram-rss-bot/replies"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/mmcdole/gofeed"
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/telegram-bot-api.v4"
 	"time"
 )
 
@@ -20,20 +20,20 @@ func AddFeed(Bot *tgbotapi.BotAPI, name string, url string, chatid int64, userid
 
 	if err != nil {
 		log.WithFields(log.Fields{"error": err}).Error("There was an error while querying the database!")
-		replies.SimpleMessage(Bot, chatid, 0, "There was an error while adding your feed! Please try again!")
+		replies.SimpleMessage(Bot, chatid, 0, "There was an error while adding your feed\\! Please try again\\!")
 		return err
 	}
 
 	// Check if user is providing a valid feed URL
 	if err := isValidFeed(url); err != nil {
 		log.WithFields(log.Fields{"error": err}).Debug("Invalid feed!")
-		replies.SimpleMessage(Bot, chatid, 0, "The feed you are trying to add is not a valid feed URL!")
+		replies.SimpleMessage(Bot, chatid, 0, "The feed you are trying to add is not a valid feed URL\\!")
 		return errors.New("invalid_feed_url")
 	}
 
 	if exists {
 		log.WithFields(log.Fields{"exists": exists}).Debug("Feed exists!")
-		replies.SimpleMessage(Bot, chatid, 0, "The feed you are trying to add already exists!")
+		replies.SimpleMessage(Bot, chatid, 0, "The feed you are trying to add already exists\\!")
 		return errors.New("feed_exists")
 	}
 
