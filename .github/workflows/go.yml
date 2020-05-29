@@ -12,7 +12,8 @@ strategy:
 
 jobs:
   build:
-    linux_amd64: Build telegram-rss-bot on linux/amd64
+    linux_amd64:
+      name: Build telegram-rss-bot on linux/amd64
       runs-on: ubuntu-latest
       steps:
         - name: Set up Go 1.x
@@ -42,7 +43,8 @@ jobs:
           with:
             # A file, directory or wildcard pattern that describes what to upload
             path: build/
-    windows_amd64: Build telegram-rss-bot on windows/amd64
+    windows_amd64:
+      name: Build telegram-rss-bot on windows/amd64
       runs-on: windows-latest
       steps:
         - name: Set up Go 1.x
@@ -72,7 +74,8 @@ jobs:
           with:
             # A file, directory or wildcard pattern that describes what to upload
             path: build/
-    darwin_amd64: Build telegram-rss-bot on darwin/amd64
+    darwin_amd64:
+      name: Build telegram-rss-bot on darwin/amd64
       runs-on: macos-latest
       steps:
         - name: Set up Go 1.x
