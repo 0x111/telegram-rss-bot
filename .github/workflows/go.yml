@@ -31,7 +31,7 @@ jobs:
           fi
 
       - name: Build
-        run: make all
+        run: make gh_linux_amd64
 
       - name: Test
         run: go test -v .
