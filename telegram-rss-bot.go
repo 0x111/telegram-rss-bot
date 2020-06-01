@@ -6,8 +6,8 @@ import (
 	"github.com/0x111/telegram-rss-bot/conf"
 	"github.com/0x111/telegram-rss-bot/db"
 	"github.com/0x111/telegram-rss-bot/migrations"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/telegram-bot-api.v4"
 )
 
 func main() {

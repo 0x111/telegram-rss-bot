@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/0x111/telegram-rss-bot/feeds"
 	"github.com/0x111/telegram-rss-bot/replies"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/telegram-bot-api.v4"
 )
 
 // Get Feed Updates from the feeds
@@ -24,9 +24,8 @@ func FeedPosts(Bot *tgbotapi.BotAPI) {
 	feedPosts := feeds.PostFeedUpdatesChan()
 
 	for feedPost := range feedPosts {
-		msg := fmt.Sprintf(`
-	%s - %s
-	`, feedPost.Title, feedPost.Link)
+		link := replies.FilterMessageChars(feedPost.Link)
+		msg := fmt.Sprintf("*%s* \\- [%s](%s)", replies.FilterMessageChars(feedPost.Title), link, link)
 		log.WithFields(log.Fields{"feedPost": feedPost, "chatID": feedPost.ChatID}).Debug("Posting feed update to the Telegram API")
 		err := replies.SimpleMessage(Bot, feedPost.ChatID, 0, msg)
 		if err == nil {
