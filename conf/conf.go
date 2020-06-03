@@ -17,6 +17,7 @@ func LoadConfig() {
 	viper.SetConfigName("bot-config")
 	viper.AddConfigPath("$HOME/.telegram-rss-bot")
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("./.telegram-rss-bot")
 	err := viper.ReadInConfig()
 
 	if err != nil {

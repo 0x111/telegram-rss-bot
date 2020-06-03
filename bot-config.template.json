@@ -1,0 +1,11 @@
+{
+  "telegram_auth_key": "TELEGRAM_AUTH_KEY",
+  "migrations": "MIGRATIONS",
+  "telegram_api_debug": TELEGRAM_API_DEBUG,
+  "db_path": "DB_PATH",
+  "log_level": "LOG_LEVEL",
+  "feed_parse_amount": FEED_PARSE_AMOUNT,
+  "feed_post_amount": FEED_POST_AMOUNT,
+  "feed_updates_interval": FEED_UPDATES_INTERVAL,
+  "feed_posts_interval": FEED_POST_INTERVAL
+}
