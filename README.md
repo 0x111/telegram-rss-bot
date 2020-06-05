@@ -43,6 +43,13 @@ You can put the config file in the current folder on where the binary resides or
 - feed_updates_interval: this represents the interval at which rate the feeds saved in the database should be updated in seconds (60 = 60 seconds and so on)
 - feed_posts_interval: this represents the interval at which rate the feeds should be posted to their respective channels in seconds (60 = 60 seconds and so on)
 
+## Docker support
+You can also run this application as a docker container. Execute the following steps:
+
+- `git clone https://github.com/0x111/telegram-rss-bot`
+- `docker build -t telegram-rss-bot:latest .`
+- `docker run --name telegram-rss-bot -e TELEGRAM_AUTH_KEY="MY-TOKEN" -d telegram-rss-bot:latest`
+
 ## Important
 Advisory: You should respect the rate limiting of the Telegram API (More info about this: https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this)
 
