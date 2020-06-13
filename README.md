@@ -51,6 +51,7 @@ You can also run this application as a docker container.
 You can pull the official docker image
 ```bash
 docker pull ruthless/telegram-rss-bot
+docker run -e TELEGRAM_AUTH_KEY="MY-TOKEN" ruthless/telegram-rss-bot
 ```
 
 ### Build from source
