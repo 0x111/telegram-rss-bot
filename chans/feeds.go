@@ -25,7 +25,7 @@ func FeedPosts(Bot *tgbotapi.BotAPI) {
 
 	for feedPost := range feedPosts {
 		link := replies.FilterMessageChars(feedPost.Link)
-		msg := fmt.Sprintf("*%s* \\- [%s](%s)", replies.FilterMessageChars(feedPost.Title), link, link)
+		msg := fmt.Sprintf("_%s_ \\- *%s* \\- [%s](%s)", replies.FilterMessageChars(feedPost.Name), replies.FilterMessageChars(feedPost.Title), link, link)
 		log.WithFields(log.Fields{"feedPost": feedPost, "chatID": feedPost.ChatID}).Debug("Posting feed update to the Telegram API")
 		err := replies.SimpleMessage(Bot, feedPost.ChatID, 0, msg)
 		if err == nil {
