@@ -152,7 +152,7 @@ func ListFeeds(userid int, chatid int64) (*[]models.Feed, error) {
 func GetAllUnPublishedFeedData() (*[]models.FeedData, error) {
 	DB := db.GetDB()
 	config := conf.GetConfig()
-	rows, err := DB.Query("SELECT feedData.id, feedData.feedid, feedData.title, feedData.link, feedData.published, feedData.publishedDate, feeds.chatid FROM feedData INNER JOIN feeds on feedData.feedid = feeds.id WHERE feedData.published=? ORDER BY feedData.id ASC LIMIT ?", false, config.GetInt("feed_post_amount"))
+	rows, err := DB.Query("SELECT feedData.id, feedData.feedid, feedData.title, feedData.link, feedData.published, feedData.publishedDate, feeds.name, feeds.chatid FROM feedData INNER JOIN feeds on feedData.feedid = feeds.id WHERE feedData.published=? ORDER BY feedData.id ASC LIMIT ?", false, config.GetInt("feed_post_amount"))
 	defer rows.Close()
 
 	if err != nil {
@@ -165,7 +165,7 @@ func GetAllUnPublishedFeedData() (*[]models.FeedData, error) {
 	for rows.Next() {
 		f := models.FeedData{}
 
-		err := rows.Scan(&f.ID, &f.FeedID, &f.Title, &f.Link, &f.Published, &f.PublishedDate, &f.ChatID)
+		err := rows.Scan(&f.ID, &f.FeedID, &f.Title, &f.Link, &f.Published, &f.PublishedDate, &f.Name, &f.ChatID)
 		feedData = append(feedData, f)
 		if err != nil {
 			log.WithFields(log.Fields{"error": err}).Error("There was an error while iterating through the results!")
