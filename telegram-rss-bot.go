@@ -66,6 +66,11 @@ func main() {
 			commands.AddCommand(Bot, &update)
 		}
 
+		// handle update command
+		if update.Message.IsCommand() && update.Message.Command() == "update" {
+			commands.UpdateCommand(Bot, &update)
+		}
+
 		// handle delete command
 		if update.Message.IsCommand() && update.Message.Command() == "delete" {
 			commands.DeleteCommand(Bot, &update)
