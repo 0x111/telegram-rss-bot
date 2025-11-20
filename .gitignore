@@ -12,4 +12,7 @@
 *.out
 
 bot-config.json
+bot-config.yaml
 .idea
+
+bot.db

@@ -35,13 +35,47 @@ func AddCommand(Bot *tgbotapi.BotAPI, update *tgbotapi.Update) {
 	}
 }
 
+func UpdateCommand(Bot *tgbotapi.BotAPI, update *tgbotapi.Update) {
+
+	commandArguments := strings.Split(update.Message.CommandArguments(), " ")
+
+	if len(commandArguments) < 2 {
+		log.Debug("Not enough arguments\\. We need \"/update id url\"")
+		return
+	}
+
+	feedUrl := commandArguments[1]
+	chatid := update.Message.Chat.ID
+	userid := update.Message.From.ID
+	feedid, err := strconv.Atoi(commandArguments[0])
+	if err != nil {
+		txt := fmt.Sprintf("Fail parse to int id %s", commandArguments[0])
+		log.Debug(txt)
+		replies.SimpleMessage(Bot, chatid, update.Message.MessageID, txt)
+		return
+	}
+
+	err = feeds.UpdateFeedByID(Bot, feedid, feedUrl, chatid, userid)
+	if err != nil {
+		replies.SimpleMessage(Bot, chatid, update.Message.MessageID, err.Error())
+		return
+	}
+	txt := ""
+
+	if err == nil {
+		txt = fmt.Sprintf("The feed with the url [%s] was successfully updated to this channel\\!", replies.FilterMessageChars(feedUrl))
+		replies.SimpleMessage(Bot, chatid, update.Message.MessageID, txt)
+	}
+}
+
 func ListCommand(Bot *tgbotapi.BotAPI, update *tgbotapi.Update) {
 	chatid := update.Message.Chat.ID
 	userid := update.Message.From.ID
 	feedres, err := feeds.ListFeeds(userid, chatid)
 
 	if err != nil {
-		panic(err)
+		log.Debugf("Fail to ListFeeds, got %v", err)
+		return
 	}
 
 	replies.ListOfFeeds(Bot, feedres, chatid, update.Message.MessageID)
@@ -51,13 +85,20 @@ func DeleteCommand(Bot *tgbotapi.BotAPI, update *tgbotapi.Update) {
 	commandArguments := strings.Split(update.Message.CommandArguments(), " ")
 
 	if len(commandArguments) < 1 {
-		panic("Not enough arguments\\. We need \"/delete id\"")
+		log.Debug("Not enough arguments\\. We need \"/delete id\"")
+		return
 	}
 
-	feedid, _ := strconv.Atoi(commandArguments[0])
 	chatid := update.Message.Chat.ID
 	userid := update.Message.From.ID
-	err := feeds.DeleteFeedByID(feedid, chatid, userid)
+	feedid, err := strconv.Atoi(commandArguments[0])
+	if err != nil {
+		txt := fmt.Sprintf("Fail parse to int id %s", commandArguments[0])
+		log.Debug(txt)
+		replies.SimpleMessage(Bot, chatid, update.Message.MessageID, txt)
+		return
+	}
+	err = feeds.DeleteFeedByID(feedid, chatid, userid)
 
 	if err != nil {
 		txt := fmt.Sprintf("There is no feed with the id [%d]\\!", feedid)
@@ -75,6 +116,7 @@ func HelpCommand(Bot *tgbotapi.BotAPI, update *tgbotapi.Update) {
 /add %FeedName %URL - With this you can add a new feed for the current channel, both the name and the url parameters are required
 /list - With this command you are able to list all the existing feeds with their ID numbers
 /delete %ID - With this command you are able to delete an added feed if you do not need it anymore. The ID parameter is required and you can get it from the /list command 
+/update %ID %URL - With this command you are able to update a feed with a new url. The ID parameter and url are required and you can get id from the /list command 
 	`
 	replies.SimpleMessage(Bot, update.Message.Chat.ID, update.Message.MessageID, replies.FilterMessageChars(txt))
 }

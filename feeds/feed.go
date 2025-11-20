@@ -3,6 +3,7 @@ package feeds
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/0x111/telegram-rss-bot/conf"
 	"github.com/0x111/telegram-rss-bot/db"
 	"github.com/0x111/telegram-rss-bot/models"
@@ -53,6 +54,40 @@ func AddFeed(Bot *tgbotapi.BotAPI, name string, url string, chatid int64, userid
 	}
 
 	log.Debug("Feed added successfully!")
+
+	return nil
+}
+
+// Update a feed by id
+func UpdateFeedByID(Bot *tgbotapi.BotAPI, feedid int, url string, chatid int64, userid int) error {
+	if err := FeedExistsByID(feedid, chatid, userid); err != nil {
+		return fmt.Errorf("There is no feed with the id [%d]\\!", feedid)
+	}
+
+	DB := db.GetDB()
+
+	// Check if user is providing a valid feed URL
+	if err := isValidFeed(url); err != nil {
+		log.WithFields(log.Fields{"error": err}).Debug("Invalid feed!")
+		return fmt.Errorf("The feed you are trying to add is not a valid feed URL\\!")
+	}
+
+	stmt, err := DB.Prepare("UPDATE feeds SET url = ? WHERE id = ?")
+	defer stmt.Close()
+
+	if err != nil {
+		log.WithFields(log.Fields{"error": err}).Error("There was an error while preparing the query!")
+		return err
+	}
+
+	_, err = stmt.Exec(url, feedid)
+
+	if err != nil {
+		log.WithFields(log.Fields{"error": err}).Error("There was an error while executing the query!")
+		return err
+	}
+
+	log.Debug("Feed updated successfully!")
 
 	return nil
 }
